@@ -30,11 +30,11 @@ D12 - cathode 1
 SevSeg sevseg;
 
 //--------------------- variables setup -----------------------------
-#define buttonDown = 2; //Пин кнопок
-#define buttonUp = 3;
-#define tin = 0; // Пин Датчика температуры IN Analog через LM358N
-#define pinpwm = 10;// порт нагревательного элемента(через транзистор)PWM
-#define numDigits = 3; //num of segments
+#define buttonDown 2 //Пин кнопок
+#define buttonUp 3
+#define tin 0 // Пин Датчика температуры IN Analog через LM358N
+#define pinpwm 10// порт нагревательного элемента(через транзистор)PWM
+#define numDigits 3 //num of segments
 volatile int tempSet = 230; // установленная температура
 volatile byte flag = false; //флаг для управления отображаемой температуры (tempReal или tempSet)
 int tempMin = 200; // минимальная температура
@@ -42,7 +42,7 @@ int tempMax = 480; // максимальная температура
 int tempReal = 20; // переменная датчика текущей температуры
 int temppwmreal = 0; // текущее значение PWM нагревателя
 int tempToDisplay = 0;
-long time = 0;//переменная для хранения времени изменения температуры
+unsigned long time = 0;//переменная для хранения времени изменения температуры
 byte digitPins[] = {4, 7, 8};  //left to right
 byte segmentPins[] = {5, 9, 16, 18, 19, 6, 15, 17};  //a to g + dg
 bool resistorsOnSegments = false; // 'false' means resistors 330 Ohm are on digit pins
@@ -50,10 +50,10 @@ byte hardwareConfig = COMMON_CATHODE;
 
 void setup(){
 	pinMode(pinpwm, OUTPUT); // Порт нагрузки(паяльника) настраиваем на выход
-	pinMode(buttonDown, INPUT_PULLDOWN);
-	pinMode(buttonUp, INPUT_PULLDOWN);
-	attachInterrupt(digitalPinToInterrupt(), RISING);
-	attachInterrupt(digitalPinToInterrupt(), RISING);
+	pinMode(buttonDown, INPUT);
+	pinMode(buttonUp, INPUT);
+	attachInterrupt(digitalPinToInterrupt(buttonDown), tmpDown, RISING);
+	attachInterrupt(digitalPinToInterrupt(buttonUp), tmpUp, RISING);
 	sevseg.begin(hardwareConfig, numDigits, digitPins, segmentPins, resistorsOnSegments);
 	sevseg.setBrightness(70);
 	sevseg.blank();
@@ -78,10 +78,10 @@ void loop(){
 	tempReal=map(tempReal,750,1023,20,500); // нужно вычислить
 	tempReal=constrain(tempReal,20,500);
 
-	if(flag true){
+	if(flag){
 		flag = false;
 		time=millis();
-	}
+	};
 	if(millis()-time<=2000){
 		tempToDisplay=tempSet;
 	}
